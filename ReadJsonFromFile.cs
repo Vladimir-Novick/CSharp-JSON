@@ -34,6 +34,43 @@ namespace SGcombo.JsonUtils
         }
     }
 
+    
+        public T ReadObjectFromJsonFile(String Filepath, List<CorrectionData> dataCorrection = null, Boolean debug = false)
+        {
+            string json = string.Empty;
+
+            T value;
+
+
+           
+
+            using (StreamReader read = new StreamReader(Filepath))
+            {
+                json = read.ReadToEnd();
+                if (dataCorrection != null)
+                {
+
+                    foreach (CorrectionData item in dataCorrection)
+                    {
+                        json = Regex.Replace(json, item.source, item.destination);
+                    }
+
+                }
+
+                if (debug)
+                {
+                    File.WriteAllText(Filepath + ".debug", json);
+                }
+
+
+               value = (T)JsonConvert.DeserializeObject(json, typeof(T));
+
+
+
+            }
+            return value;
+        }
+    
     public class ReadJsonFromFile<T>
     {
         public List<T> ReadListObjectJsonFile(String Filepath, List<CorrectionData> dataCorrection = null, Boolean debug = false)
